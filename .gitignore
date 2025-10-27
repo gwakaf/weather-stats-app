@@ -32,4 +32,7 @@ logs/
 *.temp
 
 # Local test weather data
-local_weather_data/ 
+local_weather_data/
+
+# Terraform
+.terraform/
