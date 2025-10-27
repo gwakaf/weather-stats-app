@@ -1,0 +1,7 @@
+# Weather Finder AWS Infrastructure Configuration
+
+s3_bucket: weather-data-yy
+athena_output_bucket: weather-data-yy-athena-output
+glue_database: weather_finder_db
+glue_table: historic_weather
+athena_workgroup: weather-finder-workgroup 

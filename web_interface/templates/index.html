@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather Finder</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1><i class="fas fa-cloud-sun"></i> Weather Finder</h1>
+            <p>Get detailed weather information and temperature history for predefined locations</p>
+        </header>
+
+        <main class="main-content">
+            <div class="search-section">
+                <div class="search-form">
+                    <div class="input-group">
+                        <label for="location">Location</label>
+                        <select id="location" class="location-select" required>
+                            <option value="">Select a location...</option>
+                        </select>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="date">Date</label>
+                        <input type="date" id="date" required>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="time">Time</label>
+                        <input type="time" id="time" value="13:00" required>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="unit">Temperature Unit</label>
+                        <select id="unit" class="unit-select">
+                            <option value="celsius">Celsius (°C)</option>
+                            <option value="fahrenheit">Fahrenheit (°F)</option>
+                        </select>
+                    </div>
+                    
+                    <div class="button-group">
+                        <button type="button" id="searchBtn" class="search-btn">
+                            <i class="fas fa-search"></i> Get Weather
+                        </button>
+                        <button type="button" id="graphBtn" class="graph-btn">
+                            <i class="fas fa-chart-line"></i> Historic Weather
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="weather-section" id="weatherSection" style="display: none;">
+                <div class="weather-card">
+                    <div class="weather-header">
+                        <h2 id="locationName">Location</h2>
+                        <p id="dateTime">Date & Time</p>
+                    </div>
+                    
+                    <div class="weather-main">
+                        <div class="temperature">
+                            <span id="temperature">--</span>
+                        </div>
+                        <div class="weather-icon">
+                            <i id="weatherIcon" class="fas fa-cloud"></i>
+                        </div>
+                    </div>
+                    
+                    <div class="weather-details">
+                        <div class="detail-item">
+                            <i class="fas fa-thermometer-half"></i>
+                            <span>Feels like: <span id="feelsLike">--</span>°C</span>
+                        </div>
+                        <div class="detail-item">
+                            <i class="fas fa-tint"></i>
+                            <span>Humidity: <span id="humidity">--</span>%</span>
+                        </div>
+                        <div class="detail-item">
+                            <i class="fas fa-wind"></i>
+                            <span>Wind: <span id="windSpeed">--</span></span>
+                        </div>
+                        <div class="detail-item">
+                            <i class="fas fa-eye"></i>
+                            <span>Visibility: <span id="visibility">--</span> km</span>
+                        </div>
+                    </div>
+                    
+                    <div class="weather-description">
+                        <p id="weatherDescription">Weather description will appear here</p>
+                    </div>
+                </div>
+            </div>
+
+            <div id="graphSection" class="graph-section" style="display: none;">
+                <h3>📊 Historical Data Analysis</h3>
+                
+                <!-- Temperature Graph -->
+                <div class="graph-container">
+                    <h4>🌡️ Temperature History (Last 10 Years)</h4>
+                    <img id="temperatureGraph" src="" alt="Temperature History Graph" class="weather-graph">
+                </div>
+                
+                <!-- Wind Speed Graph -->
+                <div class="graph-container">
+                    <h4>💨 Wind Speed History (Last 10 Years)</h4>
+                    <img id="windGraph" src="" alt="Wind Speed History Graph" class="weather-graph">
+                </div>
+                
+                <!-- Precipitation Graph -->
+                <div class="graph-container">
+                    <h4>🌧️ Rain History (Last 10 Years)</h4>
+                    <img id="precipitationGraph" src="" alt="Rain History Graph" class="weather-graph">
+                </div>
+                
+                <!-- Cloud Coverage Graph -->
+                <div class="graph-container">
+                    <h4>☁️ Cloud Coverage History (Last 10 Years)</h4>
+                    <img id="cloudCoverageGraph" src="" alt="Cloud Coverage History Graph" class="weather-graph">
+                </div>
+                
+                <div class="graph-stats">
+                    <div class="stat-item">
+                        <span class="stat-label">Temperature Range:</span>
+                        <span id="tempRange" class="stat-value"></span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Wind Speed Range:</span>
+                        <span id="windRange" class="stat-value"></span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Precipitation Range:</span>
+                        <span id="precipRange" class="stat-value"></span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Cloud Coverage Range:</span>
+                        <span id="cloudCoverageRange" class="stat-value"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="error-section" id="errorSection" style="display: none;">
+                <div class="error-card">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <h3>Error</h3>
+                    <p id="errorMessage">Something went wrong</p>
+                </div>
+            </div>
+
+            <div class="loading-section" id="loadingSection" style="display: none;">
+                <div class="loading-card">
+                    <div class="spinner"></div>
+                    <p id="loadingMessage">Fetching weather data...</p>
+                </div>
+            </div>
+        </main>
+
+        <footer class="footer">
+            <p>Powered by <a href="https://openweathermap.org/" target="_blank">OpenWeather API</a></p>
+            <p>Built with <i class="fas fa-heart" style="color: #e74c3c;"></i> using Python Flask</p>
+        </footer>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html> 

@@ -1,0 +1,19 @@
+# Backfilling Configuration for Weather Finder
+# This file defines parameters for the backfilling DAG
+
+# Date range for backfilling historic weather data
+start_date: "2025-01-01"  # Start date in YYYY-MM-DD format
+end_date: "2025-06-30"    # End date in YYYY-MM-DD format
+
+# Single location for backfilling
+location: "San Francisco, CA"  # Single location to backfill
+
+# API request settings
+api:
+  delay_between_requests: 1    # Seconds to wait between API requests
+  max_retries: 3               # Maximum number of retries per request
+
+# Logging and monitoring
+logging:
+  level: "INFO"                # Logging level: DEBUG, INFO, WARNING, ERROR
+  detailed_progress: true      # Show detailed progress information

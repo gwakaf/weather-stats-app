@@ -1,0 +1,43 @@
+# Weather Finder Locations Configuration
+# This file contains all predefined locations used across the application
+# Used by: historic data ingestion, daily data pipeline, web interface
+
+locations:
+  - name: "Menlo Park, CA"
+    lat: 37.4529
+    lon: -122.1817
+    region: "California"
+    country: "USA"
+    timezone: "America/Los_Angeles"
+    
+  - name: "Walnut Creek, CA"
+    lat: 37.9101
+    lon: -122.0652
+    region: "California"
+    country: "USA"
+    timezone: "America/Los_Angeles"
+    
+  - name: "San Francisco, CA"
+    lat: 37.7749
+    lon: -122.4194
+    region: "California"
+    country: "USA"
+    timezone: "America/Los_Angeles"
+    
+  - name: "Carmel-By-The-Sea, CA"
+    lat: 36.5552
+    lon: -121.9283
+    region: "California"
+    country: "USA"
+    timezone: "America/Los_Angeles"
+
+# Configuration metadata
+config:
+  version: "1.0"
+  description: "Centralized locations configuration for Weather Finder"
+  last_updated: "2024-07-18"
+  usage:
+    - "Historic data ingestion"
+    - "Daily data pipeline"
+    - "Web interface"
+    - "AWS S3/Athena queries" 
