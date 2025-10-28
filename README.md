@@ -1,4 +1,12 @@
-# Weather Finder
+# ☀️ Weather Finder – Historic Weather Lookup for Event Planning
+
+Planning an outdoor event months in advance can be stressful — especially when the weather is unpredictable. This app helps solve that problem by letting users:
+- Select a venue (from a predefined list of locations)
+- Choose a specific day and time
+- Instantly view weather history for the same date and hour over the past 10 years
+  
+💡 This enables data-driven decisions for event planning by identifying patterns like rain probability, temperature ranges, and wind conditions — helping users find the most weather-friendly dates and venues.
+
 
 A comprehensive weather data platform with web interface, historic data ingestion, and AWS integration.
 
