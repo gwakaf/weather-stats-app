@@ -10,37 +10,44 @@ Planning an outdoor event months in advance can be stressful — especially when
 <img width="436" height="1209" alt="127 0 0 1_5001_" src="https://github.com/user-attachments/assets/6f772b92-fc35-4760-a54c-a988e8c0df33" />
 
 
+## Architecture
 
-A comprehensive weather data platform with web interface, historic data ingestion, and AWS integration.
+The app consists of a web interface, a Flask backend, and a cloud-native data pipeline using Airflow, S3, and Athena.
+It fetches historic weather data using the Open-Meteo API, stores it in AWS S3 in partitioned Parquet format, and allows fast querying via Athena.
+Current weather is fetched live from the OpenWeather API.
 
 ## Project Structure
 
 ```
 weather_finder/
-├── web_interface/           # Flask web application
-│   ├── app.py              # Main Flask application
-│   ├── run.py              # Web interface runner
-│   ├── templates/          # HTML templates
-│   └── static/             # CSS, JS, images
-├── current_weather/         # Current weather API handling
-│   └── weather_api.py      # Open-Meteo API integration
-├── historic_data/          # Historic data ingestion
-│   ├── ingestion_config.yaml
-│   ├── date_pairs.json
-│   ├── airflow_schedule.csv
-│   └── airflow_setup_guide.md
-├── dags/                   # Airflow DAGs
-│   ├── weather_ingestion_dag.py      # Historic data ingestion
-│   ├── daily_weather_ingestion_dag.py # Daily current data ingestion
-│   ├── ingest_batch_airflow.py       # Batch processing script
-│   ├── generate_airflow_schedule.py  # Schedule generator
-│   └── test_airflow_logic.py         # DAG logic testing
-├── aws_infrastructure/     # AWS services integration
-│   ├── aws_weather_service.py
-│   ├── infra/             # Terraform infrastructure
-│   └── test_aws_integration.py
+├── app/                   # Application backend
+│   ├── routes.py          # API endpoints
+│   ├── aws_fetching.py    # AWS S3/Athena queries
+│   ├── weather_api.py     # Open-Meteo API integration
+│   └── utils/             # Graph generation, response formatting
+├── aws_infra/             # AWS infrastructure (Terraform)
+│   ├── main.tf           
+│   ├── glue.tf           
+│   └── s3.tf              
+├── config/                # Configuration files
+│   ├── aws_infra_config.yaml  # AWS infrastructure config
+│   ├── backfilling_config.yaml # Backfilling parameters
+│   ├── config.py          # Functions to read YAML configuration files
+│   └── locations.yaml     # Locations list
+├── dags/                  # Airflow DAGs
+│   ├── daily_ingestion_dag.py # Daily ingestion DAG fetches data and saves to S3
+│   └── backfilling_dag.py # Backfilling DAG fetches historic data for specific date ranges
+├── pipelines/             # Data ingestion pipelines logic
+│   ├── daily_ingest.py    
+│   ├── backfilling_ingest.py
+│   └── s3_writer.py
+├── tests/                 # Test suite
+│   └── tests.py
+├── web_interface/         # web UI
+│   ├── templates/index.html
+│   └── static/js/script.js
 ├── requirements.txt
-├── .env.example
+├── .env
 └── README.md
 ```
 
