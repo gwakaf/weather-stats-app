@@ -7,6 +7,9 @@ Planning an outdoor event months in advance can be stressful — especially when
   
 💡 This enables data-driven decisions for event planning by identifying patterns like rain probability, temperature ranges, and wind conditions — helping users find the most weather-friendly dates and venues.
 
+<img width="436" height="1209" alt="127 0 0 1_5001_" src="https://github.com/user-attachments/assets/6f772b92-fc35-4760-a54c-a988e8c0df33" />
+
+
 
 A comprehensive weather data platform with web interface, historic data ingestion, and AWS integration.
 
