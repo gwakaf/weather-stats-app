@@ -16,6 +16,9 @@ The app consists of a web interface, a Flask backend, and a cloud-native data pi
 It fetches historic weather data using the Open-Meteo API, stores it in AWS S3 in partitioned Parquet format, and allows fast querying via Athena.
 Current weather is fetched live from the OpenWeather API.
 
+<img width="707" height="440" alt="Screenshot 2025-10-28 at 2 55 34 PM" src="https://github.com/user-attachments/assets/c238fd3a-9ae9-42a6-8427-8367ca8af100" />
+
+
 ## Project Structure
 
 ```
