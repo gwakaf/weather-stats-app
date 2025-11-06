@@ -7,6 +7,7 @@ Handles fetching weather data from AWS S3/Athena for predefined locations.
 import boto3
 import pandas as pd
 import logging
+import time
 from datetime import datetime, timedelta
 from typing import Optional, Dict, Any, List
 import os
@@ -162,7 +163,6 @@ class AWSDataFetcher:
                 if state in ['SUCCEEDED', 'FAILED', 'CANCELLED']:
                     break
 
-                import time
                 time.sleep(1)
 
             if state == 'SUCCEEDED':

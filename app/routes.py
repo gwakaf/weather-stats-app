@@ -57,12 +57,14 @@ def register_routes(app):
             # Parse incoming HTTP request
             data = request.get_json()
             if not data:
-                return jsonify(format_error_response("No JSON data provided", 400))
+                error_response, status = format_error_response("No JSON data provided", 400)
+                return jsonify(error_response), status
             
             # Validate input
             lat, lon, _, _, location_name = extract_request_data(data)
             if lat is None or lon is None:
-                return jsonify(format_error_response("Invalid coordinates provided", 400))
+                error_response, status = format_error_response("Invalid coordinates provided", 400)
+                return jsonify(error_response), status
             
             # Call helper function from weather_api.py
             weather = weather_api.get_current_weather(lat, lon, location_name)
@@ -71,11 +73,13 @@ def register_routes(app):
             if weather:
                 return jsonify(format_weather_response(weather))
             else:
-                return jsonify(format_error_response("Failed to fetch current weather", 500))
+                error_response, status = format_error_response("Failed to fetch current weather", 500)
+                return jsonify(error_response), status
                 
         except Exception as e:
             logger.error(f"Error getting current weather: {e}")
-            return jsonify(format_error_response(str(e), 500))
+            error_response, status = format_error_response(str(e), 500)
+            return jsonify(error_response), status
 
     @app.route('/api/historic_weather', methods=['POST'])
     def get_historic_weather():
@@ -97,21 +101,44 @@ def register_routes(app):
             # Parse incoming HTTP request
             data = request.get_json()
             if not data:
-                return jsonify(format_error_response("No JSON data provided", 400))
+                error_response, status = format_error_response("No JSON data provided", 400)
+                return jsonify(error_response), status
             
-            # Validate input
-            lat, lon, date, time, location_name = extract_request_data(data)
+            # Validate input - extract coordinates first
+            lat = data.get('lat')
+            lon = data.get('lon')
             if lat is None or lon is None:
-                return jsonify(format_error_response("Invalid coordinates provided", 400))
+                error_response, status = format_error_response("Invalid coordinates provided", 400)
+                return jsonify(error_response), status
             
+            # Validate coordinates
+            try:
+                lat = float(lat)
+                lon = float(lon)
+                if not validate_coordinates(lat, lon):
+                    error_response, status = format_error_response("Invalid coordinates provided", 400)
+                    return jsonify(error_response), status
+            except (ValueError, TypeError):
+                error_response, status = format_error_response("Invalid coordinates provided", 400)
+                return jsonify(error_response), status
+            
+            # Extract and validate date
+            date = data.get('date')
             if not date:
-                return jsonify(format_error_response("Date is required", 400))
+                error_response, status = format_error_response("Date is required", 400)
+                return jsonify(error_response), status
             
             if not validate_date_format(date):
-                return jsonify(format_error_response("Invalid date format. Use YYYY-MM-DD", 400))
+                error_response, status = format_error_response("Invalid date format. Use YYYY-MM-DD", 400)
+                return jsonify(error_response), status
             
+            # Extract and validate time
+            time = data.get('time', '12:00')
             if time and not validate_time_format(time):
-                return jsonify(format_error_response("Invalid time format. Use HH:MM", 400))
+                error_response, status = format_error_response("Invalid time format. Use HH:MM", 400)
+                return jsonify(error_response), status
+            
+            location_name = data.get('location_name', f"{lat}, {lon}")
             
             # Get additional parameters
             unit = data.get('unit', 'celsius')
@@ -126,11 +153,13 @@ def register_routes(app):
                 response_data['data']['data_source'] = 'Open-Meteo API' if location_type == 'custom' else 'Open-Meteo API (fallback)'
                 return jsonify(response_data)
             else:
-                return jsonify(format_error_response("Failed to fetch historical weather data", 500))
+                error_response, status = format_error_response("Failed to fetch historical weather data", 500)
+                return jsonify(error_response), status
                 
         except Exception as e:
             logger.error(f"Error getting historical weather: {e}")
-            return jsonify(format_error_response(str(e), 500))
+            error_response, status = format_error_response(str(e), 500)
+            return jsonify(error_response), status
 
     @app.route('/api/predefined_locations', methods=['GET'])
     def get_predefined_locations():
@@ -144,7 +173,8 @@ def register_routes(app):
             
         except Exception as e:
             logger.error(f"Error getting predefined locations: {e}")
-            return jsonify(format_error_response(str(e), 500))
+            error_response, status = format_error_response(str(e), 500)
+            return jsonify(error_response), status
 
     @app.route('/api/locations', methods=['GET'])
     def get_locations():
@@ -176,7 +206,8 @@ def register_routes(app):
             logger.error(f"Error getting locations: {e}")
             import traceback
             logger.error(f"Traceback: {traceback.format_exc()}")
-            return jsonify(format_error_response(str(e), 500))
+            error_response, status = format_error_response(str(e), 500)
+            return jsonify(error_response), status
 
     @app.route('/api/weather-predefined', methods=['GET'])
     def get_weather_predefined():
@@ -197,20 +228,24 @@ def register_routes(app):
             unit = request.args.get('unit', 'celsius')
             
             if not location:
-                return jsonify(format_error_response("Location parameter is required", 400))
+                error_response, status = format_error_response("Location parameter is required", 400)
+                return jsonify(error_response), status
             
             # Validate location exists
             coords = aws_fetcher.get_location_coordinates(location)
             if not coords:
-                return jsonify(format_error_response(f"Location '{location}' not found", 404))
+                error_response, status = format_error_response(f"Location '{location}' not found", 404)
+                return jsonify(error_response), status
             
             # Validate date if provided
             if date and not validate_date_format(date):
-                return jsonify(format_error_response("Invalid date format. Use YYYY-MM-DD", 400))
+                error_response, status = format_error_response("Invalid date format. Use YYYY-MM-DD", 400)
+                return jsonify(error_response), status
             
             # Validate time if provided
             if time and not validate_time_format(time):
-                return jsonify(format_error_response("Invalid time format. Use HH:MM", 400))
+                error_response, status = format_error_response("Invalid time format. Use HH:MM", 400)
+                return jsonify(error_response), status
             
             # Call helper function from weather_api.py
             if date:
@@ -234,7 +269,8 @@ def register_routes(app):
                         'data_source': 'Open-Meteo API'
                     })
                 else:
-                    return jsonify(format_error_response("Failed to fetch historical weather data", 500))
+                    error_response, status = format_error_response("Failed to fetch historical weather data", 500)
+                    return jsonify(error_response), status
             else:
                 # Current weather
                 logger.info(f"Fetching current weather for {location}")
@@ -255,11 +291,13 @@ def register_routes(app):
                         'data_source': 'Open-Meteo API'
                     })
                 else:
-                    return jsonify(format_error_response("Failed to fetch current weather", 500))
+                    error_response, status = format_error_response("Failed to fetch current weather", 500)
+                    return jsonify(error_response), status
                     
         except Exception as e:
             logger.error(f"Error getting weather for predefined location: {e}")
-            return jsonify(format_error_response(str(e), 500))
+            error_response, status = format_error_response(str(e), 500)
+            return jsonify(error_response), status
 
     @app.route('/api/temperature-graph-predefined', methods=['GET'])
     def get_temperature_graph_predefined():
@@ -281,21 +319,26 @@ def register_routes(app):
             
             # Validate required parameters
             if not location:
-                return jsonify(format_error_response("Location parameter is required", 400))
+                error_response, status = format_error_response("Location parameter is required", 400)
+                return jsonify(error_response), status
             
             if not date:
-                return jsonify(format_error_response("Date parameter is required", 400))
+                error_response, status = format_error_response("Date parameter is required", 400)
+                return jsonify(error_response), status
             
             # Validate input
             coords = aws_fetcher.get_location_coordinates(location)
             if not coords:
-                return jsonify(format_error_response(f"Location '{location}' not found", 404))
+                error_response, status = format_error_response(f"Location '{location}' not found", 404)
+                return jsonify(error_response), status
             
             if not validate_date_format(date):
-                return jsonify(format_error_response("Invalid date format. Use YYYY-MM-DD", 400))
+                error_response, status = format_error_response("Invalid date format. Use YYYY-MM-DD", 400)
+                return jsonify(error_response), status
             
             if not validate_time_format(time):
-                return jsonify(format_error_response("Invalid time format. Use HH:MM", 400))
+                error_response, status = format_error_response("Invalid time format. Use HH:MM", 400)
+                return jsonify(error_response), status
             
             # Fetch 10 years of historical data for the same date/time
             logger.info(f"Generating historical graphs for {location} on {date} at {time}")
@@ -306,7 +349,8 @@ def register_routes(app):
             # Get coordinates
             coords = aws_fetcher.get_location_coordinates(location)
             if not coords:
-                return jsonify(format_error_response(f"Location '{location}' not found", 404))
+                error_response, status = format_error_response(f"Location '{location}' not found", 404)
+                return jsonify(error_response), status
             
             # Parse the target date and time
             target_date = dt.strptime(date, '%Y-%m-%d')
@@ -352,14 +396,16 @@ def register_routes(app):
             logger.info(f"📊 Data sources: AWS S3: {aws_count} years, Open-Meteo: {meteo_count} years")
             
             if len(historical_data) == 0:
-                return jsonify(format_error_response("No historical data available for graph generation. Please ensure data has been backfilled for this location.", 404))
+                error_response, status = format_error_response("No historical data available for graph generation. Please ensure data has been backfilled for this location.", 404)
+                return jsonify(error_response), status
             
             # Generate graphs
             logger.info(f"🎨 Generating graphs for {len(historical_data)} data points")
             graphs = generate_historical_graphs(historical_data, location, unit)
             
             if not graphs or len(graphs) == 0:
-                return jsonify(format_error_response("Failed to generate graphs", 500))
+                error_response, status = format_error_response("Failed to generate graphs", 500)
+                return jsonify(error_response), status
             
             logger.info(f"✅ Successfully generated {len(graphs)} graphs")
             
@@ -387,7 +433,8 @@ def register_routes(app):
             
         except Exception as e:
             logger.error(f"Error getting temperature graph: {e}")
-            return jsonify(format_error_response(str(e), 500))
+            error_response, status = format_error_response(str(e), 500)
+            return jsonify(error_response), status
 
     @app.route('/api/health', methods=['GET'])
     def health_check():

@@ -147,7 +147,7 @@ def backfill_historic_weather(start_date, end_date, location_name, save_to_s3=Tr
     current_date = start_dt
     while current_date <= end_dt:
         date_str = current_date.strftime('%Y-%m-%d')
-        logger.info(f"📅 Processing {date_str} ({current_date - start_dt + 1}/{total_days})")
+        logger.info(f"📅 Processing {date_str} ({(current_date - start_dt).days + 1}/{total_days})")
         
         try:
             # Get full day weather data using the centralized weather API
