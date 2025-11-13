@@ -1,13 +1,15 @@
 # ☀️ Weather Finder – Historic Weather Lookup for Event Planning
+## Project Business Goal
+Help user to make an informed decision on event planning using wether statistics data for the last 10 years for the location of their choice.
 
-Planning an outdoor event months in advance can be stressful — especially when the weather is unpredictable. This app helps solve that problem by letting users:
-- Select a venue (from a predefined list of locations)
-- Choose a specific day and time
-- Instantly view weather history for the same date and hour over the past 10 years
-  
-💡 This enables data-driven decisions for event planning by identifying patterns like rain probability, temperature ranges, and wind conditions — helping users find the most weather-friendly dates and venues.
-
-<img width="436" height="1209" alt="127 0 0 1_5001_" src="https://github.com/user-attachments/assets/6f772b92-fc35-4760-a54c-a988e8c0df33" />
+## Project Development Goals
+- **Reliable Data Ingestion**: automated incremental daily ingestion of weather data with schema validation and built-in monitoring to ensure data quality.
+- **Scalability**: on-demand backfilling pipelines that allow  expansion to new locations and historical ranges.
+- **ETL System**: orchestrated extraction, transformation, and loading raw format data from external APIs to AWS S3 storage, applying formatting and data modeling techniques.
+- **Data lake**: organized centralized repository in AWS S3 for structured  data storage.
+- **Optimized Data Access**: fast querying and efficient storage using columnar Parquet format, hierarchical partitioning (by date/location), and Athena for querying at scale.
+- **Scalability**: leverage AWS S3 storage to accommodate growing data volumes without re-architecting the system.
+- **Monitoring & Observability**: Track data pipeline execution, failures, and performance metrics through Airflow's native monitoring capabilities and custom logging.
 
 
 ## Architecture
@@ -18,6 +20,16 @@ Current weather is fetched live from the OpenWeather API.
 
 <img width="707" height="440" alt="Screenshot 2025-10-28 at 2 55 34 PM" src="https://github.com/user-attachments/assets/c238fd3a-9ae9-42a6-8427-8367ca8af100" />
 
+
+## User Experience
+Planning an outdoor event months in advance can be stressful — especially when the weather is unpredictable. This app helps solve that problem by letting users:
+- Select a venue (from a predefined list of locations)
+- Choose a specific day and time
+- Instantly view weather history for the same date and hour over the past 10 years
+  
+💡 This enables data-driven decisions for event planning by identifying patterns like rain probability, temperature ranges, and wind conditions — helping users find the most weather-friendly dates and venues.
+
+<img width="436" height="1209" alt="127 0 0 1_5001_" src="https://github.com/user-attachments/assets/6f772b92-fc35-4760-a54c-a988e8c0df33" />
 
 ## Project Structure
 
