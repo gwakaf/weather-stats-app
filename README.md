@@ -20,6 +20,34 @@ Current weather is fetched live from the OpenWeather API.
 
 <img width="707" height="440" alt="Screenshot 2025-10-28 at 2 55 34 PM" src="https://github.com/user-attachments/assets/c238fd3a-9ae9-42a6-8427-8367ca8af100" />
 
+## Cost Overview
+
+This mini-, practice costs near zero, because it stays within AWS Free Tier due to small data volume, efficient formats, and lightweight queries.See the breakdown below:
+
+| **AWS Service**      | **Optimization Strategy**                                                                 | **Monthly Cost** |
+|----------------------|--------------------------------------------------------------------------------------------|------------------|
+| **S3 Storage**       | Small Data Volume and Parquet Compression: ~86 MB of total data with ~96 records/day (≈ 24 KB/day).  Free tier includes 5 GB.                  | **$0.00**        |
+| **S3 Requests**      | Only a handful of PUTs/day and occasional GETs: under free tier limits.              | **$0.00**        |
+| **Athena Queries**   | Query scans ~6 KB due to partition pruning. Free tier covers first 10 MB/query.           | **$0.00**        |
+| **Glue Catalog**     | ~14,600 partitions. Free-tier has 1M  object limit.                             | **$0.00**        |
+| **EC2, RDS**    | Serverless Architecture: No EC2, RDS, or idle resource cost.   | **$0.00**        |
+| **TOTAL**            |                                                                                           | **$0.00 / month** |
+
+Even with **1,000 queries/day**, total Athena scan volume is ~180 MB/month, resulting in **$0.00/month** cost under current pricing.
+
+
+### Cost Scaling Estimate
+
+| **Scenario**        | **Locations** | **Queries/day** | **Monthly Cost** | **Annual Cost** |
+|---------------------|---------------|------------------|------------------|-----------------|
+| **Current**       | 4             | 10 – 1,000       | $0.00            | $0.00           |
+| **A: Small**      | 10            | 1,000            | $0.00            | $0.00           |
+| **B: Medium**     | 50            | 10,000           | $0.03            | $0.36           |
+| **C: Large**      | 100           | 50,000           | $0.10            | $1.20           |
+| **D: Enterprise** | 500           | 100,000          | $0.51            | $6.12           |
+
+Costs mostly estimate Athena query volume, assumig S3 storage and Glue catalog usage remain under Free Tier limits in most scenarios.
+
 
 ## User Experience
 Planning an outdoor event months in advance can be stressful — especially when the weather is unpredictable. This app helps solve that problem by letting users:
