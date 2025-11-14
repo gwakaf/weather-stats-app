@@ -11,9 +11,17 @@ Help user to make an informed decision on event planning using wether statistics
 - **Scalability**: leverage AWS S3 storage to accommodate growing data volumes without re-architecting the system.
 - **Monitoring & Observability**: Track data pipeline execution, failures, and performance metrics through Airflow's native monitoring capabilities and custom logging.
 
+## Components and Tech Stack
+- **Frontend**: HTML5/CSS3, JavaScript
+- **Backend**: Flask, Python
+- **Cloud Infrastructure (AWS)**: S3, Athena, Glue
+- **Infrastructure as Code**: Terraform (S3 buckets, Glue database, Athena workgroup configuration)
+- **Data Orchestration**: Apache Airflow, Docker Compose
+- **External APIs**: Open-Meteo API, OpenWeather Geocoding API
+- **Testing**: Pytest
 
-## Architecture
 
+## Architecture Diagram
 The app consists of a web interface, a Flask backend, and a cloud-native data pipeline using Airflow, S3, and Athena.
 It fetches historic weather data using the Open-Meteo API, stores it in AWS S3 in partitioned Parquet format, and allows fast querying via Athena.
 Current weather is fetched live from the OpenWeather API.
