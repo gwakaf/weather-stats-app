@@ -28,8 +28,9 @@ else:
     sys.path.insert(0, os.path.join(local_project_path, 'config'))
     sys.path.insert(0, os.path.join(local_project_path, 'pipelines'))
 
-# Import the pipeline function - DAG will fail if import fails
+# Import the pipeline functions - DAG will fail if import fails
 from pipelines.daily_ingest import run_daily_ingestion
+from pipelines.data_quality import run_daily_data_quality_check
 
 # Airflow imports
 from airflow import DAG
@@ -64,6 +65,14 @@ with DAG(
         provide_context=True,
         dag=dag
     )
+    
+    # Data quality check task - runs after ingestion
+    check_data_quality = PythonOperator(
+        task_id='check_data_quality',
+        python_callable=run_daily_data_quality_check,
+        provide_context=True,
+        dag=dag
+    )
 
-    # Task dependencies - set the task as the default task
-    ingest_weather_data 
+    # Task dependencies: ingestion -> data quality check
+    ingest_weather_data >> check_data_quality 
