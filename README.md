@@ -9,7 +9,7 @@ Help user to make an informed decision on event planning using wether statistics
 - **Data lake**: organized centralized repository in AWS S3 for structured  data storage.
 - **Optimized Data Access**: fast querying and efficient storage using columnar Parquet format, hierarchical partitioning (by date/location), and Athena for querying at scale.
 - **Scalability**: leverage AWS S3 storage to accommodate growing data volumes without re-architecting the system.
-- **Monitoring & Observability**: Track data pipeline execution, failures, and performance metrics through Airflow's native monitoring capabilities and custom logging.
+- **Monitoring & Observability**: Track data pipeline execution, failures, and performing data quality checks through Airflow's monitoring capabilities and custom logging.
 
 ## Components and Tech Stack
 - **Frontend**: HTML5/CSS3, JavaScript
@@ -19,6 +19,16 @@ Help user to make an informed decision on event planning using wether statistics
 - **Data Orchestration**: Apache Airflow, Docker Compose
 - **External APIs**: Open-Meteo API, OpenWeather Geocoding API
 - **Testing**: Pytest
+
+## Data Flows
+
+### Pipeline Flows
+- **Daily Ingestion**: Open-Meteo API → S3 (Parquet) → Glue (partition discovery) → Data Quality Checks (Airflow)
+- **Backfilling Ingestion**: Open-Meteo API → S3 (Parquet) → Glue (partition discovery) → Data Quality Checks (Airflow)
+
+### User Journey
+- **"Get Weather" button**: Web UI → Flask API → Open-Meteo API (for current weather and single-date historical weather)
+- **"Historic Weather" button**: Web UI → Flask API → AWS Athena → S3 (tries first) OR Open-Meteo API (fallback) (for 10-year trend graphs)
 
 
 ## Architecture Diagram
@@ -86,12 +96,13 @@ weather_finder/
 │   ├── config.py          # Functions to read YAML configuration files
 │   └── locations.yaml     # Locations list
 ├── dags/                  # Airflow DAGs
-│   ├── daily_ingestion_dag.py # Daily ingestion DAG fetches data and saves to S3
+│   ├── daily_ingestion_dag.py # Daily ingestion DAG: fetches data, saves to S3, runs data quality checks
 │   └── backfilling_dag.py # Backfilling DAG fetches historic data for specific date ranges
 ├── pipelines/             # Data ingestion pipelines logic
-│   ├── daily_ingest.py    
-│   ├── backfilling_ingest.py
-│   └── s3_writer.py
+│   ├── daily_ingest.py    # Daily weather data ingestion
+│   ├── backfilling_ingest.py # Historical data backfilling
+│   ├── s3_writer.py       # S3 Parquet file writer
+│   └── data_quality.py    # Data quality validation and monitoring
 ├── tests/                 # Test suite
 │   └── tests.py
 ├── web_interface/         # web UI
@@ -100,5 +111,71 @@ weather_finder/
 ├── requirements.txt
 ├── .env
 └── README.md
+```
+
+## Quick Start
+### Prerequisites
+- Python 3.8+
+- AWS account
+- Docker & Docker Compose (optional, for Airflow)
+
+### 1. Install Dependencies
+```bash
+# Create virtual environment
+python -m venv venv
+source venv/bin/activate
+
+# Install dependencies
+pip install -r requirements.txt
+```
+
+### 2. Required Environmental variables and Credentials
+Create a `.env` file in the project root:
+
+```bash
+# For AWS services
+AWS_ACCESS_KEY_ID=your_aws_access_key
+AWS_SECRET_ACCESS_KEY=your_aws_secret_key
+AWS_DEFAULT_REGION=us-east-1
+
+# For weather API
+OPENWEATHER_API_KEY=your_openweather_api_key
+```
+
+**Note**: 
+- Open-Meteo API (used for weather data) does **not** require an API key
+- OpenWeather API key is only needed for geocoding location names
+
+### 3. Run Web Application
+```bash
+python start_web_app.py
+```
+
+Access the web interface at: **http://localhost:5001**
+
+### 4. Deploy AWS Infrastructure
+```bash
+cd aws_infra
+terraform init
+terraform plan
+terraform apply
+```
+
+### 5. Run Airflow for Data Pipelines
+```bash
+# Start Airflow services
+docker-compose -f docker-compose.airflow.yml up -d
+
+# Access Airflow UI at: http://localhost:8081
+# Default credentials: airflow / airflow
+```
+
+### Testing
+```bash
+# Run unit tests
+pytest tests/unit/
+
+# Run all tests
+pytest tests/
 ```
 
