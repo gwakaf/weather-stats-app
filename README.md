@@ -4,11 +4,11 @@ Help users to make an informed decision on event planning using weather statisti
 
 ## Project Development Goals
 - **Reliable Data Ingestion**: automated incremental daily ingestion of weather data with schema validation and built-in monitoring to ensure data quality.
-- **Scalability**: on-demand backfilling pipelines that allow  expansion to new locations and historical ranges.
+- **Dataset extensibility**: enabled expansion to new locations and longer historical ranges through on-demand Airflow backfill pipelines.
 - **ETL System**: orchestrated extraction, transformation, and loading raw format data from external APIs to AWS S3 storage, applying formatting and data modeling techniques.
 - **Data lake**: organized centralized repository in AWS S3 for structured  data storage.
 - **Optimized Data Access**: fast querying and efficient storage using columnar Parquet format, hierarchical partitioning (by date/location), and Athena for querying at scale.
-- **Scalability**: leverage AWS S3 storage to accommodate growing data volumes without re-architecting the system.
+- **Scalable cloud storage**: leverage AWS S3 storage to accommodate growing data volumes without changing the core architecture.
 - **Monitoring & Observability**: Track data pipeline execution, failures, and performing data quality checks through Airflow's monitoring capabilities and custom logging.
 
 ## Components and Tech Stack
