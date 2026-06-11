@@ -1,6 +1,6 @@
 # ☀️ Weather Finder – Historic Weather Lookup for Event Planning
 ## Project Business Goal
-Help user to make an informed decision on event planning using wether statistics data for the last 10 years for the location of their choice.
+Help users to make an informed decision on event planning using weather statistics data for the last 10 years for the location of their choice.
 
 ## Project Development Goals
 - **Reliable Data Ingestion**: automated incremental daily ingestion of weather data with schema validation and built-in monitoring to ensure data quality.
@@ -40,7 +40,7 @@ Current weather is fetched live from the OpenWeather API.
 
 ## Cost Overview
 
-This mini-, practice costs near zero, because it stays within AWS Free Tier due to small data volume, efficient formats, and lightweight queries.See the breakdown below:
+This practice project costs near zero, because it stays within AWS Free Tier due to small data volume, efficient formats, and lightweight queries.See the breakdown below:
 
 | **AWS Service**      | **Optimization Strategy**                                                                 | **Monthly Cost** |
 |----------------------|--------------------------------------------------------------------------------------------|------------------|
@@ -64,7 +64,7 @@ Even with **1,000 queries/day**, total Athena scan volume is ~180 MB/month, resu
 | **C: Large**      | 100           | 50,000           | $0.10            | $1.20           |
 | **D: Enterprise** | 500           | 100,000          | $0.51            | $6.12           |
 
-Costs mostly estimate Athena query volume, assumig S3 storage and Glue catalog usage remain under Free Tier limits in most scenarios.
+Costs mostly estimate Athena query volume, assuming S3 storage and Glue catalog usage remain under Free Tier limits in most scenarios.
 
 
 ## User Experience
