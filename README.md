@@ -1,4 +1,7 @@
 # ☀️ Weather Finder – Historic Weather Lookup for Event Planning
+## Description
+Flask-based weather analytics application with Airflow ingestion pipelines, AWS S3 data lake storage, Glue cataloging, Athena querying, Parquet partitioning, and Pytest-based validation; daily and backfill data ingestion, schema/data quality checks, API fallback logic, and cost-aware AWS design.
+
 ## Project Business Goal
 Help users to make an informed decision on event planning using weather statistics data for the last 10 years for the location of their choice.
 
