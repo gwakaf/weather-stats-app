@@ -17,7 +17,10 @@ Help users to make an informed decision on event planning using weather statisti
 - **Cloud Infrastructure (AWS)**: S3, Athena, Glue
 - **Infrastructure as Code**: Terraform (S3 buckets, Glue database, Athena workgroup configuration)
 - **Data Orchestration**: Apache Airflow, Docker Compose
-- **External APIs**: Open-Meteo API, OpenWeather Geocoding API
+- **External APIs**:
+  * OpenWeather API — current weather
+  * OpenWeather Geocoding API — location/geocoding
+  * Open-Meteo API — historical weather data
 - **Testing**: Pytest
 
 ## Data Flows
@@ -27,7 +30,7 @@ Help users to make an informed decision on event planning using weather statisti
 - **Backfilling Ingestion**: Open-Meteo API → S3 (Parquet) → Glue (partition discovery) → Data Quality Checks (Airflow)
 
 ### User Journey
-- **"Get Weather" button**: Web UI → Flask API → Open-Meteo API (for current weather and single-date historical weather)
+- **"Get Weather" button**: Web UI → Flask API → OpenWeather API (for current weather and single-date historical weather)
 - **"Historic Weather" button**: Web UI → Flask API → AWS Athena → S3 (tries first) OR Open-Meteo API (fallback) (for 10-year trend graphs)
 
 
@@ -144,7 +147,7 @@ OPENWEATHER_API_KEY=your_openweather_api_key
 
 **Note**: 
 - Open-Meteo API (used for weather data) does **not** require an API key
-- OpenWeather API key is only needed for geocoding location names
+- OpenWeather API requires OPENWEATHER_API_KEY
 
 ### 3. Run Web Application
 ```bash
